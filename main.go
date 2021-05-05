@@ -199,5 +199,5 @@ func main() {
 	r.Handle("GET", "/.well_known/hu/*filepath", serveFile)
 	r.Handler("POST", "/saml/:saml_endpoint", samlSP)
 
-	http.ListenAndServe(":8000", r)
+	http.ListenAndServe(":5309", r)
 }
