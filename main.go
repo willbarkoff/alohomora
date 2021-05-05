@@ -160,7 +160,7 @@ func main() {
 		panic(err) // TODO handle error
 	}
 
-	rootURL, err := url.Parse("https://aa22b60bfcdf.ngrok.io")
+	rootURL, err := url.Parse(os.Args[1])
 	if err != nil {
 		panic(err) // TODO handle error
 	}
@@ -170,7 +170,7 @@ func main() {
 		Key:         keyPair.PrivateKey.(*rsa.PrivateKey),
 		Certificate: keyPair.Leaf,
 		IDPMetadata: idpMetadata,
-		EntityID:    "https://aa22b60bfcdf.ngrok.io/saml/acs",
+		EntityID:    os.Args[1],
 	})
 
 	r := httprouter.New()
