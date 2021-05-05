@@ -1,0 +1,116 @@
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Alohamora</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+	<script defer src="https://use.fontawesome.com/releases/v5.15.3/js/all.js"></script>
+</head>
+
+<body>
+	<nav class="navbar" role="navigation" aria-label="main navigation">
+		<div class="navbar-brand">
+			<a class="navbar-item" href="https://bulma.io">
+				<strong>Alohamora</strong>
+			</a>
+
+			<a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+				<span aria-hidden="true"></span>
+				<span aria-hidden="true"></span>
+				<span aria-hidden="true"></span>
+			</a>
+		</div>
+	</nav>
+	<section class="hero is-link is-bold">
+		<div class="hero-body has-text-centered">
+			<p class="title">
+				Alohamora
+			</p>
+			<p class="subtitle">
+				Manage your PGP public key in the BarkoffUSA Web Key Directory
+			</p>
+		</div>
+	</section>
+	<section class="section">
+		<div class="container">
+			<div class="notification {{.NotificationType}}">{{.Notification}}</div>
+			<p class="title">Hello, {{.FName}}.</p>
+			<form action="/logout" method="post">
+				<button type="submit" class="block button is-warning">Log out</button>
+			</form>
+			<p class="block">You currently have permission to manage the Web Key Directory entry for {{.Email}}</p>
+			<div class="columns">
+				<div class="column">
+					<h1 class="title">Update key</h1>
+					<h2 class="subtitle">Upload a new PGP public key</h2>
+					<form action="/upload" enctype="multipart/form-data" method="post">
+						<div class="block file is-centered is-boxed is-fullwidth" id="upload-wrapper">
+							<label class="file-label">
+								<input class="file-input" type="file" name="new-key" id="upload" required>
+								<span class="file-cta">
+									<span class="file-icon">
+										<i class="fas fa-upload"></i>
+									</span>
+									<span class="file-label has-text-centered">
+										New key
+									</span>
+								</span>
+								<span class="file-name is-hidden" id="file-name">
+
+								</span>
+								<script>
+									var upload = document.querySelector("#upload");
+									var uploadWrapper = document.querySelector("#upload-wrapper");
+									var fileName = document.querySelector("#file-name");
+									console.log(fileName)
+									upload.addEventListener("change", function () {
+										var name = upload.value.split("\\").pop();
+										uploadWrapper.classList.add("has-name");
+										fileName.textContent = name;
+										fileName.classList.remove("is-hidden")
+									})
+								</script>
+							</label>
+						</div>
+
+						<div class="field">
+							<input type="checkbox" required>
+							I certify that I am {{.FName}} {{.LName}}, the email address {{.Email}} belongs to me, and
+							the key I am uploading is my PGP public key.
+						</div>
+
+						<div class="field">
+							<input type="checkbox" required>
+							I checked to make sure that I am only uploading my public key, as the server does no
+							verification to ensure that a private key was not uploaded.
+						</div>
+						<button type="submit" class="button is-success">Upload my key</button>
+					</form>
+				</div>
+				<div class="column">
+					<h1 class="title">Delete key</h1>
+					<h2 class="subtitle">Remove your PGP public key from the server</h2>
+					<form action="/delete" method="post">
+						<div class="field">
+							<input type="checkbox" required>
+							Yes, I want to remove my key from the server. I understand that this action cannot be
+							undone.
+						</div>
+						<button type="submit" class="button is-danger">Remove my key</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+	<div class="section">
+		<div class="container">
+			<h1 class="title">Your key</h1>
+			<h2 class="subtitle">This is the key we currently have on file for you</h2>
+			<pre><code>{{.Key}}</code></pre>
+		</div>
+	</div>
+</body>
+
+</html>
