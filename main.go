@@ -22,7 +22,7 @@ func writeApp(w http.ResponseWriter, r *http.Request, nottype string, notcontent
 	lname := samlsp.AttributeFromContext(r.Context(), "lname")
 	email := samlsp.AttributeFromContext(r.Context(), "email")
 
-	key, keyErr := os.ReadFile("hu/" + domainFromEmail(email) + "/" + hashFromEmail(email))
+	key, keyErr := os.ReadFile("openpgpkey/" + domainFromEmail(email) + "/hu/" + hashFromEmail(email))
 	if key == nil || keyErr != nil {
 		key = []byte("No key available")
 	}
@@ -41,9 +41,9 @@ func app(w http.ResponseWriter, r *http.Request) {
 
 func uploadKey(w http.ResponseWriter, r *http.Request) {
 	email := samlsp.AttributeFromContext(r.Context(), "email")
-	filename := "hu/" + domainFromEmail(email) + "/" + hashFromEmail(email)
+	filename := "openpgpkey/" + domainFromEmail(email) + "/hu/" + hashFromEmail(email)
 
-	_ = os.Mkdir("hu/"+domainFromEmail(email), 0700)
+	_ = os.Mkdir("openpgpkey/"+domainFromEmail(email)+"/hu", 0700)
 
 	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
@@ -74,7 +74,7 @@ func uploadKey(w http.ResponseWriter, r *http.Request) {
 
 func deleteKey(w http.ResponseWriter, r *http.Request) {
 	email := samlsp.AttributeFromContext(r.Context(), "email")
-	filename := "hu/" + domainFromEmail(email) + "/" + hashFromEmail(email)
+	filename := "openpgpkey/" + domainFromEmail(email) + "/hu/" + hashFromEmail(email)
 
 	err := os.Remove(filename)
 	if os.IsNotExist(err) {
@@ -125,7 +125,7 @@ func hashFromEmail(email string) string {
 }
 
 func serveFile(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	file, err := os.ReadFile("./hu/" + p.ByName("filepath"))
+	file, err := os.ReadFile("./openpgpkey/" + p.ByName("filepath"))
 	if os.IsNotExist(err) {
 		writeError(w, errors.New("Page not found"), http.StatusInternalServerError)
 		return
@@ -196,7 +196,7 @@ func main() {
 	r.Handler("POST", "/upload", samlSP.RequireAccount(http.HandlerFunc(uploadKey)))
 	r.Handler("POST", "/delete", samlSP.RequireAccount(http.HandlerFunc(deleteKey)))
 	r.Handler("POST", "/logout", samlSP.RequireAccount(logout(samlSP)))
-	r.Handle("GET", "/.well_known/openpgpkey/hu/*filepath", serveFile)
+	r.Handle("GET", "/.well_known/openpgpkey/*filepath", serveFile)
 	r.Handler("POST", "/saml/:saml_endpoint", samlSP)
 
 	http.ListenAndServe(":5309", r)
