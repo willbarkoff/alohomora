@@ -20,3 +20,4 @@ service.key
 
 # keys
 hu/*
+openpgpkey/*
