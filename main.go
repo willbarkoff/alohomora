@@ -43,7 +43,7 @@ func uploadKey(w http.ResponseWriter, r *http.Request) {
 	email := samlsp.AttributeFromContext(r.Context(), "email")
 	filename := "openpgpkey/" + domainFromEmail(email) + "/hu/" + hashFromEmail(email)
 
-	_ = os.Mkdir("./openpgpkey/"+domainFromEmail(email)+"/hu/", 0700)
+	_ = os.MkdirAll("./openpgpkey/"+domainFromEmail(email)+"/hu/", 0700)
 
 	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
