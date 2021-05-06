@@ -196,7 +196,7 @@ func main() {
 	r.Handler("POST", "/upload", samlSP.RequireAccount(http.HandlerFunc(uploadKey)))
 	r.Handler("POST", "/delete", samlSP.RequireAccount(http.HandlerFunc(deleteKey)))
 	r.Handler("POST", "/logout", samlSP.RequireAccount(logout(samlSP)))
-	r.Handle("GET", "/.well_known/openpgpkey/*filepath", serveFile)
+	r.Handle("GET", "/.well-known/openpgpkey/*filepath", serveFile)
 	r.Handler("POST", "/saml/:saml_endpoint", samlSP)
 
 	http.ListenAndServe(":5309", r)
